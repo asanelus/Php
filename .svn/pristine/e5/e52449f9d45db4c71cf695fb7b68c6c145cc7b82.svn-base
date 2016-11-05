@@ -1,0 +1,125 @@
+<?php
+class Triage extends CI_Controller {
+	public function __construct() {
+		parent::__construct();
+
+		$this->load->helper('form');
+		$this->load->model('Patient');
+		$this->load->model('Visit');
+
+		$this->load->driver('session');
+	}
+
+	public function index() {
+		$data['data'] = array($this->session->userdata('patient'));
+		$this->load->template("triage/triage", $data);		
+	}
+
+	/**
+	*
+	*
+	* @return the next Patient
+	*/
+	public function getNextPatient() {
+		$queue = $this->getQueue('unsorted');
+		if (!$queue->isEmpty()) {
+			$next = $queue->dequeue();
+
+			$patient = array(
+				'patient' => array(
+					'patient_id'=>$next->getPatient_id(),
+					'ramq'=>$next->getRamq(),
+					'name'=>$next->getFirstName() . " " . $next->getLastName(),
+					'phone_home'=>$next->getPhoneHome(),
+					'phone_emergency'=>$next->getEmergency(),
+					'primaryPhysician'=>$next->getPrimaryPhysician(),
+					'existingConditions'=>$next->getExistingConditions(),
+					'medication1'=>$next->getMedication1(),
+					'medication2'=>$next->getMedication2(),
+					'medication3'=>$next->getMedication3(),
+				)
+			);
+
+			$this->session->set_userdata($patient);
+		}
+		redirect('triage', 'refresh');
+	}
+
+	/*public function submitNewPatient() {
+		$firstName = $this->input->post("firstName");
+		$lastName = $this->input->post("lastName");
+		$code = $this->input->post("code");
+
+		$data['data'] = array($firstName);
+		$this->load->template("triage/triage", $data);	
+
+		$patient = new Patient();
+		$patient->setFirstName($firstName);
+		$patient->setLastName($lastName);
+
+		$visit = new Visit();
+		$visit->setCode($code);
+
+		$this->enqueuePatient($patient, $visit);
+
+		$this->showPatientQueue();
+	}*/
+
+	/**
+	* 
+	*
+	* @param patient the Patient model
+	*/
+	private function enqueuePatient($patient, $visit) {
+		if ($visit->getCode() == 1) {
+			$this->enqueuePriorityPatient($patient);
+		} else {
+			$this->enqueueNewPatient($patient);
+		}
+	}
+
+	private function enqueuePriorityPatient($patient) {
+		$priorityQueue = $this->getQueue("1");
+
+		$priorityQueue->enqueue($patient);
+		$serialized = $priorityQueue->serialize();
+
+		$datam = array('queue_content'=>$serialized);
+		$this->db->where('queue_name', '1');
+		$this->db->update('queue', $datam);
+		
+	}
+
+	private function enqueueNewPatient($patient) {
+		
+	}
+
+	private function getQueue($name) {
+		$queueTable = $this->db->query("SELECT `queue_content` FROM queue WHERE queue_name LIKE '" . $name . "'");
+		$row = $queueTable->row_array();
+		$serializedQueue = $row['queue_content'];
+		$unserializedQueue = new SplQueue();
+
+		if (!empty($serializedQueue)) {
+			$unserializedQueue->unserialize($serializedQueue);
+		}
+
+		return $unserializedQueue;
+	}
+
+	/*private function showPatientQueue() {
+		$queue = $this->getQueue('1');
+		$patients = "";
+
+		while (!$queue->isEmpty()) {
+			$p = $queue->dequeue();
+			$patients = $patients . " " . $p->getFirstName();
+		}
+		$patientQueue = array(
+			'queue'=>$patients
+		);
+		$this->session->set_userdata($patientQueue);
+		redirect('triage', 'refresh');
+	}*/
+}
+?>

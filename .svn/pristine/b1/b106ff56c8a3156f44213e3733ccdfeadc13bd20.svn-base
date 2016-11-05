@@ -1,0 +1,32 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class ExaminationCTL extends CI_Controller{
+	
+	public function __construct(){
+		parent::__construct();
+		$this->load->model('examination_model');
+		$this->load->library('session');
+	}
+	
+	public function index(){
+		$data['pagetitle'] = 'Examination';
+		$this -> load -> view('examination/examination',$data);
+	}
+}
+
+/**
+ * INSERT INTO PATIENT(RAMQ_ID,LAST_NAME,FIRST_NAME,PHONE_NUM_HOME,PHONE_NUM_EMERGENCY,PRIMARY_PHYSICIAN
+    ,existing_conditions,medication1,medication2,medication3) VALUES(123,"Ram","John","5142222222","5142332222","Dr.Mario","Concussion","","","");
+    
+    INSERT INTO PATIENT(RAMQ_ID,LAST_NAME,FIRST_NAME,PHONE_NUM_HOME,PHONE_NUM_EMERGENCY,PRIMARY_PHYSICIAN
+    ,existing_conditions,medication1,medication2,medication3) VALUES(123,"Smith","Benoit","5142456592","5142332652","Dr.Luigi","Concussion","","","");
+    
+    INSERT INTO PATIENT(RAMQ_ID,LAST_NAME,FIRST_NAME,PHONE_NUM_HOME,PHONE_NUM_EMERGENCY,PRIMARY_PHYSICIAN
+    ,existing_conditions,medication1,medication2,medication3) VALUES(123,"Woods","Marcus","5142561222","5142349122","Dr.Wario","Concussion","","","");
+    
+    INSERT INTO PATIENT(RAMQ_ID,LAST_NAME,FIRST_NAME,PHONE_NUM_HOME,PHONE_NUM_EMERGENCY,PRIMARY_PHYSICIAN
+    ,existing_conditions,medication1,medication2,medication3) VALUES(123,"Laten","Bio","5119478222","5142163422","Dr.Sahib","Concussion","","","");
+
+ * 
+ */
+/* End of file examinationCTL.php */

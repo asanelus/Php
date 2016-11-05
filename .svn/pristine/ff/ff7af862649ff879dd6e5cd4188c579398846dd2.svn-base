@@ -1,0 +1,66 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Examination extends CI_Controller{
+	
+	public function __construct(){
+		parent::__construct();
+		
+		$this->load->model('examination_model');
+		$this->load->model('Patient');
+		$this->load->model('Visit');
+		
+		//$this->load->library('session');
+	}
+	
+	function getQueueCount($name) {
+		$queueTable = $this->db->query("SELECT COUNT(`queue_content`) FROM queue WHERE queue_name = " . $name);
+		$row = $queueTable->row_array();
+		$serializedQueue = $row['queue_content'];
+		$unserializedQueue = new SplQueue();
+		return $unserializedQueue->unserialize($serializedQueue);
+	}
+	
+	public function index(){
+		$data['pagetitle'] = 'Clinic - Examination';
+		$a = '1';
+		$b='2';
+		$c = '3';
+		$d = '4';
+		$e = '5';
+		$data['queue1'] = "5";
+		$data['queue2'] = $b;
+		$data['queue3'] = $c;
+		$data['queue4'] = $d;
+		$data['queue5'] = $e;
+		$this -> load -> view('examination',$data);
+	}
+	
+	
+}
+
+/**
+ * INSERT INTO PATIENT(RAMQ_ID,LAST_NAME,FIRST_NAME,PHONE_NUM_HOME,PHONE_NUM_EMERGENCY,PRIMARY_PHYSICIAN
+    ,existing_conditions,medication1,medication2,medication3) VALUES(123,"Ram","John","5142222222","5142332222","Dr.Mario","Concussion","","","");
+    
+    INSERT INTO PATIENT(RAMQ_ID,LAST_NAME,FIRST_NAME,PHONE_NUM_HOME,PHONE_NUM_EMERGENCY,PRIMARY_PHYSICIAN
+    ,existing_conditions,medication1,medication2,medication3) VALUES(123,"Smith","Benoit","5142456592","5142332652","Dr.Luigi","Concussion","","","");
+    
+    INSERT INTO PATIENT(RAMQ_ID,LAST_NAME,FIRST_NAME,PHONE_NUM_HOME,PHONE_NUM_EMERGENCY,PRIMARY_PHYSICIAN
+    ,existing_conditions,medication1,medication2,medication3) VALUES(123,"Woods","Marcus","5142561222","5142349122","Dr.Wario","Concussion","","","");
+    
+    INSERT INTO PATIENT(RAMQ_ID,LAST_NAME,FIRST_NAME,PHONE_NUM_HOME,PHONE_NUM_EMERGENCY,PRIMARY_PHYSICIAN
+    ,existing_conditions,medication1,medication2,medication3) VALUES(123,"Laten","Bio","5119478222","5142163422","Dr.Sahib","Concussion","","","");
+CREATE TABLE IF NOT EXISTS user (
+	`user_id` int auto_increment PRIMARY KEY,
+	`hashed_password` varchar(255) NOT NULL,
+	`invalid_login_counter` int default 0,
+	`privilege_level` int default 1
+	/* privilege_level possible values:
+	 * 1 = reception
+	 * 2 = triage
+	 * 3 = nurse
+	 * 4 = admin
+INSERT INTO USERS(hashed_password,privilege_level) values ("funfun",3);
+ * 
+ */
+/* End of file examinationCTL.php */

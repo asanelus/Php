@@ -1,0 +1,63 @@
+<?php
+class Login_model extends CI_Model {
+	public function __construct() {
+		parent::__construct();
+		$this->load->database();
+	}
+	
+	public function get_users() {
+		$query = $this->db->get('user');
+		return $query->result_array();
+	}
+	
+	public function get_user_by_name($userName = '') {
+		$sql = "SELECT hashed_password " .
+				"FROM user WHERE user_name = ?";
+		$query = $this->db->query($sql, array($userName));
+		if($query->num_rows() > 0) {
+			return $query->row();
+		} else {
+			return 0;
+		}
+	}
+	
+	public function get_user_id_and_privs_by_name($userName = '') {
+		$sql = "SELECT user_id, reception_priv, triage_priv, " .
+				"nurse_priv FROM user WHERE user_name = ?";
+		$query = $this->db->query($sql, array($userName));
+		if($query->num_rows() > 0) {
+			return $query->row();
+		} else {
+			return 0;
+		}
+	}
+	
+	public function increment_invalid_login_ctr($userName = '') {
+		$sql = "UPDATE user SET invalid_login_counter = " .
+				"invalid_login_counter + 1 " .
+				"WHERE user_name = ?";
+		$query = $this->db->query($sql, array($userName));
+		// Since this a write query, it will return TRUE or FALSE
+		return $query;
+	}
+	
+	public function reset_invalid_login_ctr_for_user($userName = '') {
+		$sql = "UPDATE user SET invalid_login_counter = 0 " .
+				"WHERE user_name = ?";
+		$query = $this->db->query($sql, array($userName));
+		// Since this a write query, it will return TRUE or FALSE
+		return $query;
+	}
+	
+	public function get_invalid_login_ctr($userName = '') {
+		$sql = "SELECT invalid_login_counter FROM user " . 
+				"WHERE user_name = ?";
+		$query = $this->db->query($sql, array($userName));
+		if($query->num_rows() > 0) {
+			return $query->row();
+		} else {
+			return 0;
+		}
+	}
+}
+?>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><?php echo $title; ?></title>
+	<meta charset="UTF-8" />
+	<!-- See http://stackoverflow.com/questions/6630770/where-do-i-put-image-files-css-js-etc-in-codeigniter -->
+	<link href="<?php echo asset_url(); ?>css/styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="wrapper">
+	<h2><?php echo $title; ?></h2>
+
+	<div class="form-box">
+		<?php 
+		/* Form:
+		 * 	RAMQ id
+		 * 	if patient with RAMQ id doesn't exist, load new patient form
+		 *  else, load existing patient's information (editable)
+		 *  
+		 *  textarea for existing conditions
+		 *  3 select menus (one per medication, single selection mode in each)
+		 *  	listing 20 meds per list, if previously selected, remove from list 
+		 *  
+		 *  button to add patient to triage queue
+		 */
+		if($ramqSearch) {
+			echo '<table>';
+			echo form_open('register');
+			echo '<tr><td>' . form_label('Patient RAMQ ID:', 'ramqId') . '</td>';
+			echo '<td>' . form_input('ramqId') . '</td></tr>';
+			echo '</tr></table>';
+			echo '<div class="form-btn-wrapper">';
+			echo form_submit(array('name' => 'register_submit', 'value' => 'Search',
+				'class' => 'form-btn'));
+			echo '</div>';
+		} else {
+			
+		}
+		?>
+	</div>
+</div>
+<?php
+	if(isset($userId)) {
+		echo '<div id="logout">';
+		echo form_open('register/logout');
+		echo form_submit(array('name' => 'logout_submit', 'value' => 'Logout', 
+			'id' => 'logout-btn'));
+		echo '</div>';
+	}
+?>
+</body>
+</html>

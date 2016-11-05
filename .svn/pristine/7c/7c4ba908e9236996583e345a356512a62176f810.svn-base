@@ -1,0 +1,45 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Register extends CI_Controller {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$this->load->driver('session');
+	}
+	
+	public function index() {
+		$data['title'] = 'Clinic - Patient Registration';
+		
+		$userId = $this->session->userdata('userId');
+		
+		if(isset($userId)) {
+			$data['userId'] = $userId;
+		} else {
+			// By setting this to empty string, we can avoid having if-statements
+			// in the view
+			$data['userId'] = '';
+		}
+		
+		
+		
+		$this->load->template('register/register', $data);
+	}
+	
+	public function logout() {
+		// Double-check that the user pressed logout button
+		if(!empty($this->input->post('logout_submit'))) {
+			// User clicked logout. Unset all session variables.
+			$this->session->unset_userdata('userId');
+			$this->session->unset_userdata('receptionPriv');
+			$this->session->unset_userdata('triagePriv');
+			$this->session->unset_userdata('nursePriv');
+			// Finally, destroy the session.
+			$this->session->sess_destroy();
+			redirect('login', 'index');
+		}
+	}
+}
+?>

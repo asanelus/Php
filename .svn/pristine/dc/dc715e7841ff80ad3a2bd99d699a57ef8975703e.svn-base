@@ -1,0 +1,82 @@
+<?php
+// See application/core/MY_Loader.php for $this->load->template(...)
+if(!defined('BASEPATH'))
+	exit('No direct script access allowed');
+
+class Login extends CI_Controller {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->load->model('login_model');
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$this->load->driver('session');
+		
+		// Define validation rules
+		$this->form_validation->set_rules('username', 'Username',
+				'trim|required');
+		$this->form_validation->set_rules('password', 'Password',
+				'trim|required');
+	}
+	
+	public function index() {
+		$data['title'] = 'Clinic - Login';
+		
+		echo 'potato';
+		
+		if($this->form_validation->run() == FALSE) {
+			echo 'potato1';
+			// Error, show form again.
+			$this->load->template('login/login', $data);
+		} else {
+			echo 'potato2';
+			// Now check the username and password with the model.
+			$userName = $this->input->post('username');
+			if(valid_string($userName)) {
+				echo 'potato3';
+				$pwd = $this->input->post('password');
+				if(valid_string($pwd)) {
+					echo 'potato4';					
+					$query = $this->login_model->get_user_by_name(
+							$userName);
+					if(password_verify($pwd, $query->hashed_password)) {
+						echo 'potato5';
+						// Found user! Log them in.
+						
+						$data['userData'] = $this->login_model->get_user_id_and_privs_by_name(
+								$userName);
+						$this->load->view('login_test', $data);
+						
+						/*
+						foreach($userData->result() as $row) {
+							
+						}
+						$userData = array(
+							'user_id' => $userName,
+							''
+						);
+						$this->session->set_userdata();*/
+					}
+				} else {
+					$data['error'] = 'Please type in a password.';
+				}
+				
+			} else {
+				$data['error'] = 'Please type in a username.';
+			}
+			/*
+			$validLoginPair = TRUE;
+			if($validLoginPair) {
+				// Match found
+				$this->session->set_userdata('user', 
+						trim($this->input->post('username')));
+				$data['user'] = trim($this->input->post('username'));
+				$this->load->template('home/index', $data);
+			} else {
+				$data['error'] = 'Invalid username or password';
+				$this->load->template('login/login', $data);
+			}*/
+		}
+	}
+}
+?>

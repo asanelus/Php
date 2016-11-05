@@ -1,0 +1,44 @@
+<?php
+// See application/core/MY_Loader.php for $this->load->template(...)
+if(!defined('BASEPATH'))
+	exit('No direct script access allowed');
+
+class Login extends CI_Controller {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$this->load->driver('session');
+		
+		// Define validation rules
+		$this->form_validation->set_rules('username', 'Username',
+				'trim|required');
+		$this->form_validation->set_rules('password', 'Password',
+				'trim|required');
+	}
+	
+	public function index() {
+		$data['title'] = 'Clinic - Login';
+		
+		if($this->form_validation->run() == FALSE) {
+			// Error, show form again.
+			$this->load->template('login/login', $data);
+		} else {
+			// Now check the username and password with the model.
+			//TODO
+			$validLoginPair = TRUE;
+			if($validLoginPair) {
+				// Match found
+				$this->session->set_userdata('user', 
+						trim($this->input->post('username')));
+				$data['user'] = trim($this->input->post('username'));
+				$this->load->template('home/index', $data);
+			} else {
+				$data['error'] = 'Invalid username or password';
+				$this->load->template('login/login', $data);
+			}
+		}
+	}
+}
+?>

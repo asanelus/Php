@@ -1,0 +1,82 @@
+<?php
+class Examination_model extends CI_Model {
+	public function __construct() {
+		parent::__construct ();
+		$this->load->database ();
+		$this->load->model ( 'Patient' );
+	}
+	public function get_PatientsInQueue($queue = 1) {
+		$query = $this->db->get ( 'queue' );
+		return $query->result_array ();
+	}
+	public function getQueue($name) {
+		$queueTable = $this->db->query ( "SELECT `queue_content` FROM queue WHERE queue_name = " . $name );
+		$row = $queueTable->row_array ();
+		
+		if ($row ['queue_content'] != "") {
+			//$serializedQueue = $row ['queue_content'];
+			//$unserializedQueue = new SplQueue ();
+			//return $unserializedQueue->unserialize ( $serializedQueue );
+			return $row ['queue_content'];
+		}
+		return "";
+	}
+	public function get_patient_models_in_queue($queue_name){
+		$q1 = explode(",",$this -> getQueue($queue_name));
+		$patients = array();
+		
+		foreach($q1 as $visit){
+			if($visit != ""){
+			$row = $this -> get_patient_visit_info_row($visit);
+			//echo 'in get patient models '. $row ->first_name;
+			$tempPatient = $this -> Patient -> __construct($row ->patient_id,$row ->ramq_id , $row ->last_name, 
+			$row ->first_name,$row ->phone_num_home,$row ->phone_num_emergency,$row ->primary_physician,
+			$row ->existing_conditions,$row ->medication1, $row ->medication2,$row ->medication3);
+			$patients[]= $tempPatient;
+			}else{
+				echo 'eroor in get_patient_models_in_queue exammodel';
+			}
+		}
+		//$patients = $this -> db -> query();
+		return $patients;
+	}
+	public function get_visit_models_in_queue($queue_name){
+		$q1 = explode(",",$this -> getQueue($queue_name));
+		$visits = array();
+	
+		foreach($q1 as $visit){
+			if($visit != "" && $visit != "NULL"){
+				//echo ' in get visit models '.$visit;
+				$row = $this -> get_patient_visit_info_row($visit);
+				$tempVisit = $this -> Visit -> __construct($row ->visit_id,$row ->patient_id , $row ->time_of_registration,
+						$row ->time_of_examination,$row ->code,"",$row ->primary_complaint,
+						$row ->symptom1,$row ->symptom2);
+				$visits[]= $tempVisit;
+			}else{
+				echo 'eroor in get_visit_models_in_queue exammodel';
+			}
+		}		
+		return $visits;
+	}
+	
+	public function get_patient_visit_info_row($visitId=0){
+		$query = $this->db->query ("SELECT * FROM VISIT V, PATIENT P WHERE V.PATIENT_ID =P.PATIENT_ID AND VISIT_ID=".$visitId);
+		$row = $query -> row();
+		return $row;
+	}
+	
+	public function getQueueCount($name) {
+		 $queueCount = $this->db->query ( "SELECT `queue_content` FROM queue WHERE queue_name = " . $name." AND queue_content IS NOT NULL" );
+		 $visitsInQueue = $queueCount -> row();
+		 if($visitsInQueue){
+		 	$arrVisit = explode(",",$visitsInQueue -> queue_content);
+		 }
+		 else{
+		 	return 0;
+		 }
+		 //$queuesample = $this->getQueue ( $name );
+		
+		return count($arrVisit);
+	}
+}
+?>

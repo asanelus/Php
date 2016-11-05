@@ -1,0 +1,117 @@
+<?php
+class Triage extends CI_Controller {
+	private $positionPattern;
+	private $positionMax;
+
+	public function __construct() {
+		parent::__construct();
+
+		$this->load->helper('form');
+		$this->load->model('Patient');
+		$this->load->model('Visit');
+
+		$this->positionPattern = array(2, 3, 2, 4, 3, 2, 5, 2, 3, 4);
+		$this->positionMax = 10;
+
+		$this->load->driver('session');
+	}
+
+	public function index() {
+		//if($this->session->userdata('queue')) {
+			var_dump($this->session->all_userdata());
+		//} else
+		//	echo "There is no queue!";
+
+		$data['data'] = array("this is data");
+		$this->load->template("triage/triage", $data);		
+	}
+
+	public function submitNewPatient() {
+		$firstName = $this->input->post("firstName");
+		$lastName = $this->input->post("lastName");
+		$code = $this->input->post("code");
+
+		$data['data'] = array($firstName);
+		$this->load->template("triage/triage", $data);	
+
+		$patient = new Patient();
+		$patient->setFirstName($firstName);
+		$patient->setLastName($lastName);
+
+		$visit = new Visit();
+		$visit->setCode($code);
+
+		$this->enqueuePatient($patient, $visit);
+
+		$this->showPatientQueue();
+	}
+
+	/**
+	* 
+	*
+	* @param patient the Patient model
+	*/
+	public function enqueuePatient($patient, $visit) {
+		if ($visit->getCode() == 1) {
+			$this->enqueuePriorityPatient($patient);
+		} else {
+			$this->enqueueNewPatient($patient);
+		}
+	}
+
+	/**
+	*
+	*
+	* @return the next Patient
+	*/
+	public function getNextPatient() {
+		
+	}
+
+	private function enqueuePriorityPatient($patient) {
+		$priorityQueue = $this->getQueue("1");
+
+		$priorityQueue->enqueue($patient);
+		$serialized = $priorityQueue->serialize();
+
+		$datam = array('queue_content'=>$serialized);
+		$this->db->where('queue_name', '1');
+		$this->db->update('queue', $datam);
+		
+	}
+
+	private function enqueueNewPatient($patient) {
+
+	}
+
+	private function getQueue($name) {
+		$queueTable = $this->db->query("SELECT `queue_content` FROM queue WHERE queue_name = " . $name);
+		$row = $queueTable->row_array();
+		$serializedQueue = $row['queue_content'];
+		$unserializedQueue = new SplQueue();
+
+		if (!empty($serializedQueue)) {
+			$temp = $unserializedQueue->unserialize($serializedQueue);
+			if (!$temp->isEmpty()) {
+				$unserializedQueue = $temp;
+			}
+		}
+
+		return $unserializedQueue;
+	}
+
+	private function showPatientQueue() {
+		$queue = $this->getQueue('1');
+		$patients = "";
+
+		while (!$queue->isEmpty()) {
+			$p = $queue->dequeue();
+			$patients = $patients . " " . $p;
+		}
+
+		$data['queue'] = $patients;
+		$this->session->set_userdata($data);
+		redirect('triage', 'refresh');
+	}
+}
+?>

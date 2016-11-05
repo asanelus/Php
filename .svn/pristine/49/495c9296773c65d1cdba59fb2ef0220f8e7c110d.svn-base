@@ -1,0 +1,56 @@
+<?php
+class Triage {
+	private $mainQueue;
+	private $priorityQueue;
+	private $positionModel;
+	private $positionCtr;
+	private $positionMax;
+	private $positionInQueue; 
+
+	public function __construct() {
+		$this->mainQueue = new SplQueue();
+		$this->priorityQueue = new SqlQueue();
+		$positionModel = new array(2, 3, 2, 4, 3, 2, 5, 2, 3, 4);
+		$positionCtr = 0;
+		$positionMax = 10;
+	}
+
+	/**
+	* 
+	*
+	* @param patient the Patient model
+	*/
+	public function enqueuePatient($patient) {
+		if ($patient->getCode() == 1) {
+			$this->priorityQueue->enqueue($patient);
+		} else {
+			
+		}
+	}
+
+	/**
+	*
+	*
+	* @return the next Patient
+	*/
+	public function getNextPatient() {
+		if ($this->priorityQueue->count() > 0) {
+			return $this->priorityQueue->dequeue();
+		} else {
+			if ($this->positionCtr < $this->positionMax)
+				$this->positionCtr++;
+			else
+				$this->positionCtr = 0;
+			return $this->mainQueue->dequeue();
+		}
+	}
+
+	public function getMainQueueLength() {
+		return $this->mainQueue->count();
+	}
+
+	public function getPriorityQueueLength() {
+		return $this->priorityQueue->count();
+	}
+}
+?>

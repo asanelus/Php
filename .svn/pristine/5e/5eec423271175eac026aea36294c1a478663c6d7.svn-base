@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><?php echo $title; ?></title>
+	<meta charset="UTF-8" />
+	<link href="styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<h2><?php echo $title; ?></h2>
+	
+	<p>
+		<?php echo $welcome_message; ?>
+	</p>
+	
+	<ul>
+		<li><?php echo anchor('login', 'Login Page'); ?></li>
+		<li><?php echo anchor('register', 'Registration Page'); ?></li>
+		<li><?php echo anchor('triage', 'Triage Page'); ?></li>
+		<li><?php echo anchor('examination', 'Examination Page'); ?></li>
+		<li><?php echo anchor('admin', 'Admin Page'); ?></li>
+	</ul>
+</body>
+</html>

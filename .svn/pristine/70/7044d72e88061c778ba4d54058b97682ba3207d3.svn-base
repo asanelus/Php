@@ -1,0 +1,9 @@
+<?php
+// Taken from http://stackoverflow.com/questions/804399/codeigniter-create-new-helper
+if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+function asset_url() {
+	return base_url().'assets/';
+}
+
+?>

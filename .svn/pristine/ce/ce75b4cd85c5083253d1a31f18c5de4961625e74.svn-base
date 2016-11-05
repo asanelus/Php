@@ -1,0 +1,3 @@
+php register_users.php
+php register_patients.php
+php register_visits.php

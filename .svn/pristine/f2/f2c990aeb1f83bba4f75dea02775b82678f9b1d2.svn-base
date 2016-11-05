@@ -1,0 +1,31 @@
+<HTML>
+	<HEAD>
+		<title>FlyingMongoose - Triage</title>
+		<meta charset="UTF-8" />
+		<link href="<?php echo asset_url(); ?>css/styles.css" rel="stylesheet" type="text/css" />
+	</HEAD>
+	<BODY>
+		<div>	<!--		
+			Triage: <?php  echo $data[0]; ?>
+			<?php echo form_open('triage/submitNewPatient'); ?>
+				<p>This is a temporary form</p>
+				First Name<br>
+				<input type="text" name="firstName"><br>
+				Last Name<br>
+				<input type="text" name="lastName"><br>
+				Code:
+				<input type="radio" name="code" value="1">1<br>
+				<input type="submit" name="submit" value="submit">
+			</form> -->
+
+			<?php echo form_open('triage/getNextPatient'); ?>
+				<input type="submit" name="nextPatient" value="Display Next Patient" />
+			</form>
+			<?php
+			foreach($data as $item) {
+				echo $item . '<br>';
+			}
+			?>
+		</div>
+	</BODY>
+</HTML>

@@ -1,0 +1,61 @@
+<?php
+function main() {
+	try {
+		$pdo = new PDO ( 'mysql:host=localhost;port=3306;dbname=clinic;', 'root', '' );
+		//$pdo = new PDO('mysql:host=waldo2.dawsoncollege.qc.ca;port=3306;dbname=cs1233306;', 'CS1233306', 'whableny');
+		$pdo->setAttribute ( PDO::ATTR_CASE, PDO::CASE_NATURAL );
+		$pdo->setAttribute ( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+		
+		createVisit ( $pdo, 1, 2, 'Elephant on the head', 'Sore hip', 'Smoke from the ears' ); 
+		createVisit ( $pdo, 1, 5, 'Dust bunnies in the ears', 'Dizzy', 'Nausea');
+		createVisit ( $pdo, 2, 1, 'Cannot stop laughing', 'Cannot stop dancing', 'Orange skin' ); 
+		createVisit ( $pdo, 3, 2, 'Ate a bad potato', 'Rickrolls everyone', 'Rolls on the floor' );
+	} catch ( PDOException $ex ) {
+		echo $ex->getMessage ();
+	} finally { 
+		unset ( $pdo );
+	}
+}
+function createVisit($pdo, $patientId, $code, $primaryComplaint, $symptom1, $symptom2) {
+	$query = "INSERT INTO visit(patient_id, code, primary_complaint, symptom1, symptom2)" .
+			"VALUES(?,?,?,?,?)";
+	
+	$stmt = $pdo->prepare ( $query );
+	
+	$stmt->bindParam ( 1, $patientId );
+	$stmt->bindParam ( 2, $code );
+	$stmt->bindParam ( 3, $primaryComplaint );
+	$stmt->bindParam ( 4, $symptom1 );
+	$stmt->bindParam ( 5, $symptom2 );
+	
+	$stmt->execute ();
+	
+	$query2 = "SELECT visit_id from visit where patient_id=?";
+	$stmt1 = $pdo -> prepare($query2);
+	$stmt1 ->bindParam ( 1, $patientId );
+	$stmt1 ->execute ();
+	/*
+	$result = $stmt1 -> fetch();
+	echo 'result in create visit'.$result[0];
+	insertPatientIntoQueue($pdo,$result[0],$code);
+	*/
+}
+	function insertPatientIntoQueue($pdo,$visitId=0,$code=1){
+	
+	$querycontent = "select queue_content from queue where queue_name =?";
+	$stmttemp = $pdo -> prepare($querycontent);
+	$stmttemp -> bindParam(1,$code);
+	$stmttemp -> execute();
+	$result = $stmttemp -> fetch();
+	echo ' result: '.$result[0];
+	//echo ' result: '.$result;
+	$newcontent = $result[0].",".$visitId;
+	$query1 = "UPDATE QUEUE SET QUEUE_CONTENT = ? WHERE QUEUE_NAME=? ";
+	$stmt1 = $pdo->prepare ( $query1 );
+	//$content = "(select queue_content from queue where queue_name =".$code.")";
+	$stmt1 -> bindParam(1,$newcontent);
+	$stmt1 -> bindParam(2,$code);
+	$stmt1 -> execute();
+}
+main ();
+?>

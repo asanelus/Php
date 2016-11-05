@@ -1,0 +1,43 @@
+<?php
+class Triage extends CI_Controller {
+	private $positionPattern;
+	private $positionMax;
+
+	public function __construct() {
+		$this->load->database();
+		$this->positionPattern = array(2, 3, 2, 4, 3, 2, 5, 2, 3, 4);
+		$this->positionMax = $this->positionPattern->count();
+	}
+
+	/**
+	* 
+	*
+	* @param patient the Patient model
+	*/
+	public function enqueuePatient($patient) {
+		if ($patient->getCode() == 1) {
+			$this->enqueuePriorityPatient($patient);
+		} else {
+			$this->enqueueNewPatient($patient);
+		}
+	}
+
+	/**
+	*
+	*
+	* @return the next Patient
+	*/
+	public function getNextPatient() {
+		
+	}
+
+	private function enqueuePriorityPatient($patient) {
+		$queue = $this->db->query("SELECT `queue_content` FROM queue WHERE queue_name LIKE 1")
+		$code1queue = $queue->
+	}
+
+	private function enqueueNewPatient($patient) {
+
+	}
+}
+?>

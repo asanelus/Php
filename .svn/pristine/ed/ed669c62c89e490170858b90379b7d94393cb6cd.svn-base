@@ -1,0 +1,43 @@
+<?php
+function main() {
+	try {
+		$pdo = new PDO ( 'mysql:host=localhost;port=3306;dbname=clinic;', 'root', '' );
+		//$pdo = new PDO('mysql:host=waldo2.dawsoncollege.qc.ca;port=3306;dbname=cs1233306;', 'CS1233306', 'whableny');
+		$pdo->setAttribute ( PDO::ATTR_CASE, PDO::CASE_NATURAL );
+		$pdo->setAttribute ( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+		
+		$queue = new SplQueue();
+		//$queue->enqueue($patients);
+		$serialized = $queue->serialize();
+
+		createUnsortedQueue ( $pdo, $serialized);
+	} catch ( PDOException $ex ) {
+		echo $ex->getMessage ();
+	} finally {
+		unset ( $pdo );
+	}
+}
+function createUnsortedQueue($pdo, $queue) {
+	$query = "INSERT INTO queue(queue_content)
+			  VALUES(?)
+			  WHERE queue_name LIKE 'unsorted'";
+	
+	$stmt = $pdo->prepare ( $query );
+	
+	$stmt->bindParam ( 1, $queue );
+	
+	$stmt->execute ();
+}
+function createPatients() {
+	$patients = array();
+
+	$query = "SELECT * FROM patient";
+	$stmnt = $pdo->prepare($query);
+	$stmnt->execute();
+
+	return $patients;
+}
+
+main ();
+?>
+

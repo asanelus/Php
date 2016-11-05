@@ -1,0 +1,31 @@
+<?php 
+echo validation_errors();
+if(isset($error)) {
+	echo "<div class='error'>$error</div>";
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title><?php echo $title; ?></title>
+	<meta charset="UTF-8" />
+	<!-- See http://stackoverflow.com/questions/6630770/where-do-i-put-image-files-css-js-etc-in-codeigniter -->
+	<link href="<?php echo asset_url(); ?>css/styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div id="wrapper">
+		<h2><?php echo $title; ?></h2>
+		<div id="login_box">
+		<?php 
+			echo form_open('login');
+			echo form_label('Username:', 'username');
+			echo form_input('username');
+			echo form_label('Password:', 'password');
+			echo form_input('password');
+			echo form_submit('login_submit', 'Login');
+		?>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title><?php echo $title; ?></title>
+	<meta charset="UTF-8" />
+	<link href="<?php echo asset_url(); ?>css/styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div id="wrapper">
+		<h2><?php echo $title; ?></h2>
+		
+		<p>
+			<?php echo $welcome_message; ?>
+		</p>
+		
+		<ul class="indent1 list-no-bullets">
+			<?php
+				// If the user id logged in, userId will be set. 
+				if(!isset($userId)) {
+					echo '<li>' . anchor('login', 'Login') . '</li>'; 
+				} 
+				if($receptionPriv == 1) {
+					echo '<li>' . anchor('register', 'Patient Registration') . '</li>'; 
+				} 
+				if($triagePriv == 1) {
+					echo '<li>' . anchor('triage', 'Triage') . '</li>'; 
+				}
+				if($nursePriv == 1) {
+					echo '<li>' . anchor('examination', 'Examination') . '</li>'; 
+				}
+			?>
+		</ul>
+	</div>
+	<?php
+	if(isset($userId)) {
+		echo '<div id="logout">';
+		echo form_open('home/logout');
+		echo form_submit(array('name' => 'logout_submit', 'value' => 'Logout', 
+			'id' => 'logout-btn'));
+		echo '</div>';
+	}
+	?>
+</body>
+</html>

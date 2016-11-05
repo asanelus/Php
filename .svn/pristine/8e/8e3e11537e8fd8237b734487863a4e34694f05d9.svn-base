@@ -1,0 +1,30 @@
+<?php 
+echo validation_errors();
+if(isset($error)) {
+	echo "<div class='error'>$error</div>";
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Clinic - Login</title>
+</head>
+<body>
+	<div id="wrapper">
+		<div id="login_box">
+		<?php 
+			echo form_open('login');
+			echo form_label('Username:', 'username');
+			echo form_input('username');
+		?>
+			<label for="username">Username:</label>
+			<input type="text" name="username" />
+			<label for="password">Password:</label>
+			<input type="password" name="password" />
+			
+			<input type="submit" value="Login" />
+		</div>
+	</div>
+</body>
+</html>

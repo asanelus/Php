@@ -1,0 +1,58 @@
+CREATE DATABASE IF NOT EXISTS clinic;
+USE clinic;
+
+CREATE TABLE IF NOT EXISTS patient (
+	`patient_id` int auto_increment PRIMARY KEY,
+	`ramq_id` int NOT NULL,
+	`last_name` varchar(50) NOT NULL,
+	`first_name` varchar(50) NOT NULL,
+	`phone_num_home` varchar(50) NOT NULL,
+	`phone_num_emergency` varchar(50) NOT NULL,
+	`primary_physician` varchar(50) NOT NULL,
+	`existing_conditions` varchar(50) NOT NULL,
+	`medication1` varchar(50) NOT NULL,
+	`medication2` varchar(50) NOT NULL,
+	`medication3` varchar(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS visit (
+	`visit_id` int auto_increment PRIMARY KEY,
+	`patient_id` int NOT NULL,
+	`time_of_registration` timestamp NOT NULL,
+	`time_of_triage` timestamp NOT NULL,
+	`time_of_examination` timestamp NOT NULL,
+	`code` int(1) NOT NULL,
+	`primary_complaint` varchar(255) NOT NULL,
+	`symptom1` varchar(255) NOT NULL,
+	`symptom2` varchar(255) NOT NULL,
+	CONSTRAINT FOREIGN KEY (`patient_id`) REFERENCES `patient`(`patient_id`)
+);
+
+CREATE TABLE IF NOT EXISTS queue (
+	`queue_id` int auto_increment PRIMARY KEY,
+	`queue_name` int(1) NOT NULL,
+	`queue_content` varchar(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS system (
+	`current_position` int(1) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user (
+	`user_id` int auto_increment PRIMARY KEY,
+	`hashed_password` varchar(255) NOT NULL,
+	`invalid_login_counter` int default 0,
+	`privilege_level` int default 1
+	/* privilege_level possible values:
+	 * 1 = reception
+	 * 2 = triage
+	 * 3 = nurse
+	 * 4 = admin
+	 * */
+);
+
+INSERT INTO queue(`queue_name`) VALUES (1);
+INSERT INTO queue(`queue_name`) VALUES (2);
+INSERT INTO queue(`queue_name`) VALUES (3);
+INSERT INTO queue(`queue_name`) VALUES (4);
+INSERT INTO queue(`queue_name`) VALUES (5);

@@ -1,0 +1,46 @@
+<?php
+class Register_model extends CI_Model {
+	public function __construct() {
+		parent::__construct();
+		$this->load->database();
+	}
+	
+	public function getUserByRAMQId($ramqId = '') {
+		$sql = "SELECT ramq_id, last_name, first_name, phone_num_home,
+			phone_num_emergency, primary_physician, existing_conditions,
+			medication1, medication2, medication3 
+			FROM patient WHERE ramq_id = ?";
+		
+		$query = $this->db->query($sql, array($ramqId));
+		if($query->num_rows() > 0) {
+			return $query->row();
+		} else {
+			return 0;
+		}
+	}
+
+	public function getAllMeds() {
+		$sql = "SELECT medication_name FROM medication";
+
+		$query = $this->db->query($sql);
+		if($query->num_rows() > 0) {
+			return $query->result();
+		} else {
+			return 0;
+		}
+	}
+	
+	public function getMedIdByName($medName = '') {
+		$sql = "SELECT medication_id FROM medication 
+						WHERE medication_name = ?";
+
+		$query = $this->db->query($sql, array($medName));
+		if($query->num_rows() > 0) {
+			return $query->row();
+		} else {
+			return 0;
+		}
+	}
+	
+}
+?>

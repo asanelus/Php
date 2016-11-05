@@ -1,0 +1,40 @@
+<?php
+class Examination_model extends CI_Model {
+	public function __construct() {
+		parent::__construct ();
+		$this->load->database ();
+	}
+	public function get_PatientsInQueue($queue = 1) {
+		$query = $this->db->get ( 'queue' );
+		return $query->result_array ();
+	}
+	public function getQueue($name) {
+		$queueTable = $this->db->query ( "SELECT `queue_content` FROM queue WHERE queue_name = " . $name );
+		$row = $queueTable->row_array ();
+		
+		if ($row ['queue_content'] != "") {
+			//$serializedQueue = $row ['queue_content'];
+			//$unserializedQueue = new SplQueue ();
+			//return $unserializedQueue->unserialize ( $serializedQueue );
+			return $row ['queue_content'];
+		}
+		return "";
+	}
+	
+	public function get_patient_visit_info_row($visitId=0){
+		$query = $this->db->query ("SELECT * FROM VISIT V, PATIENT P WHERE V.PATIENT_ID =P.PATIENT_ID AND VISIT_ID=".$visitId);
+		$row = $query -> row();
+		return $row;
+	}
+	
+	public function getQueueCount($name) {
+		 $queueCount = $this->db->query ( "SELECT `queue_content` FROM queue WHERE queue_name = " . $name );
+		 $visitsInQueue = $queueCount -> row();
+		 $arrVisit = explode(",",$visitsInQueue -> queue_content);
+		 
+		 //$queuesample = $this->getQueue ( $name );
+		
+		return count($arrVisit)-1;
+	}
+}
+?>

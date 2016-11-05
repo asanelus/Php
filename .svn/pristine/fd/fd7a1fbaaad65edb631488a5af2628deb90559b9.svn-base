@@ -1,0 +1,80 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Register extends CI_Controller {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->load->model('register_model');
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$this->load->driver('session');
+
+		// Define validation rules
+		$this->form_validation->set_rules('ramqId', 'trim|required');
+	}
+	
+	public function index() {
+		$data['title'] = 'Clinic - Patient Registration';
+		
+		$userId = $this->session->userdata('userId');
+		
+		if(isset($userId)) {
+			$data['userId'] = $userId;
+		} else {
+			// By setting this to empty string, we can avoid having if-statements
+			// in the view
+			$data['userId'] = '';
+		}
+
+		if($this->form_validation->run() == FALSE) {
+			// Error, show form again
+			$this->load->template('register/register', $data);
+		} else {
+			// Get all the meds so we can populate the select lists
+			$meds = $this->register_model->getAllMeds();
+			if($meds) {
+				$medsArray = array();
+				foreach ($meds as $val) {
+					$medsArray[] = $val->medication_name;
+				}
+				$data['meds'] = $medsArray;
+			}
+
+			// Check the ramq id with the model
+			$ramqId = $this->input->post('ramqId');
+			if(valid_string($ramqId)) {
+				$query = $this->register_model->getUserByRAMQId($ramqId);
+				if($query) {
+					// patient with specified ramqId exists. Load existing
+					// patient's information.
+					$data['ramqId'] = $query->ramq_id;
+					$data['lastName'] = $query->last_name;
+					$data['firstName'] = $query->first_name;
+					$data['homePhone'] = $query->phone_num_home;
+					$data['emergencyPhone'] = $query->phone_num_emergency;
+					$data['primaryPhysician'] = $query->primary_physician;
+					$data['existingConditions'] = $query->existing_conditions;
+					$data['med1'] = $query->medication1;
+					$data['med2'] = $query->medication2;
+					$data['med3'] = $query->medication3;
+				} else {
+					// patient does not exist. Load new patient registration
+					// form.
+					$data['ramqId'] = $userId;
+					$data['lastName'] = '';
+					$data['firstName'] = '';
+					$data['homePhone'] = '';
+					$data['emergencyPhone'] = '';
+					$data['primaryPhysician'] = '';
+					$data['existingConditions'] = '';
+					$data['med1'] = $medsArray[0];
+					$data['med2'] = $medsArray[0];
+					$data['med3'] = $medsArray[0];
+				}
+				$this->load->template('register/registerPatient', $data);
+			}
+		}
+	}
+}
+?>

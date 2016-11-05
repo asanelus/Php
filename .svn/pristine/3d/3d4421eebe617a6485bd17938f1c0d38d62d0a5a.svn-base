@@ -1,0 +1,39 @@
+<?php
+if(!defined('BASEPATH'))
+	exit('No direct script access allowed');
+
+class Web_api extends CI_Controller {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->load->model('web_api_model');
+		$this->load->driver('session');
+		$this->load->database();
+	}
+	
+	public function index($visitId = -1) {
+		if(isset($visitId) && $visitId > 0) { 
+			$result = $this->web_api_model->get_visit($visitId);
+		} else {
+			$result = NULL;
+		}
+		
+		// If it's not null
+		if(isset($result)) {
+			// If it's not zero
+			if($result) {
+				$output = $result;
+			} else {
+				// It's zero. No records were found.
+				$output = array('error' => 0);
+			}
+		} else {
+			// It's null. Visit id was not specified.
+			$output = array('error' => 1);
+		}
+		
+		$data['json'] = json_encode($output);
+		$this->load->view('web_api/web_api', $data);
+	}
+}
+?>

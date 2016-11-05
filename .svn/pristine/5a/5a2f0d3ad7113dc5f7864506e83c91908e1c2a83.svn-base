@@ -1,0 +1,83 @@
+<?php
+// See application/core/MY_Loader.php for $this->load->template(...)
+if(!defined('BASEPATH'))
+	exit('No direct script access allowed');
+
+// http://stackoverflow.com/questions/8616887/logout-codeigniter for logout 
+
+class Login extends CI_Controller {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->load->model('login_model');
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$this->load->driver('session');
+		
+		// Define validation rules
+		$this->form_validation->set_rules('username', 'Username',
+				'trim|required');
+		$this->form_validation->set_rules('password', 'Password',
+				'trim|required');
+	}
+	
+	public function index() {
+		$data['title'] = 'Clinic - Login';
+		
+		if($this->form_validation->run() == FALSE) {
+			// Error, show form again.
+			$this->load->template('login/login', $data);
+		} else {
+			// Now check the username and password with the model.
+			$userName = $this->input->post('username');
+			if(valid_string($userName)) {
+				$pwd = $this->input->post('password');
+				if(valid_string($pwd)) {
+					$query = $this->login_model->get_user_by_name(
+							$userName);
+					if(password_verify($pwd, $query->hashed_password)) {
+						// Found user! Log them in.
+						// Put the user id and user privileges in the session
+						$userData = 
+							$this->login_model->get_user_id_and_privs_by_name(
+								$userName);
+						
+						$this->session->set_userdata('userId', 
+								$userData->user_id);
+						$this->session->set_userdata('receptionPriv', 
+								$userData->reception_priv);
+						$this->session->set_userdata('triagePriv', 
+								$userData->triage_priv);
+						$this->session->set_userdata('nursePriv', 
+								$userData->nurse_priv);
+						// Send the user to the home controller
+						redirect('home', 'index');
+					} else {
+						// Incorrect password.
+						$data['error'] = 'Incorrect username or password.';
+						
+						// Check if their invalid_login_counter is 
+						// still less than 5.
+						$counterQuery = 
+							$this->login_model->get_invalid_login_ctr(
+								$userName);
+						if($counterQuery->invalid_login_counter < 5) {
+							// Increment the invalid_login_counter in the
+							// database
+							$this->login_model->increment_invalid_login_ctr(
+									$userName);
+						} else {
+							// The user has surpassed the specified login
+							// attempts. Lock them out for a period of time.
+						}
+					}
+				} else {
+					$data['error'] = 'Please type in a password.';
+				}
+			} else {
+				$data['error'] = 'Please type in a username.';
+			}
+		}
+	}
+}
+?>

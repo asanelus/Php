@@ -1,0 +1,16 @@
+<html>
+	<head>
+		<title>MediXFlyingMongoose</title>
+	</head>
+	<body>
+		<?php echo 'This is from the controller: ' . $test; ?>
+		<p>What is going to go here?</p>
+		<ol>
+			<li>Links to Login page</li>
+			<li>Link to Register page</li>
+			<li>Link to Triage page</li>
+			<li>Link to Examination page</li>
+			<li>Link to Admin page</li>
+		</ol>
+	</body>
+</html>

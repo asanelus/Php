@@ -1,0 +1,21 @@
+<?php
+class Register_model extends CI_Model {
+	public function __construct() {
+		parent::__construct();
+		$this->load->database();
+	}
+	
+	public function getUserByRAMQId($ramqId = '') {
+		$sql = "SELECT ramq_id FROM patient WHERE ramq_id = ?";
+		
+		$query = $this->db->query($sql, array($ramqId));
+		if($query->num_rows() > 0) {
+			return $query->row();
+		} else {
+			return 0;
+		}
+	}
+	
+	
+}
+?>

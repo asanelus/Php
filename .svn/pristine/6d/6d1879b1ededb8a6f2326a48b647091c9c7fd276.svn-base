@@ -1,0 +1,12 @@
+<?php
+class Visit {
+	private $visit_id;
+	private $patient_id;
+	private $timeOfRegistration;
+	private $timeOfExamination;
+	private $code;
+	private $primaryComplaint;
+	private $symptom1;
+	private $symptom2;
+}
+?>

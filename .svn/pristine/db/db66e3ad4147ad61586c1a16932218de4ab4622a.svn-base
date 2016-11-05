@@ -1,0 +1,20 @@
+<HTML>
+	<HEAD>
+		<title>FlyingMongoose - Triage</title>
+	</HEAD>
+	<BODY>
+		Triage: <?php echo $data[0]; ?>
+		<?php echo form_open('triage/submitNewPatient'); ?>
+		<!--
+		<form name="temp" action="index.php/triage/submitNewPatient" method="POST">-->
+			<p>This is a temporary form</p>
+			First Name<br>
+			<input type="text" name="firstName"><br>
+			Last Name<br>
+			<input type="text" name="lastName"><br>
+			Code:
+			<input type="radio" name="code1" value="1">1<br>
+			<input type="submit" name="submit" value="submit">
+		</form>
+	</BODY>
+</HTML>

@@ -1,0 +1,35 @@
+<?php 
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+echo validation_errors();
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title><?php echo $title; ?></title>
+	<meta charset="UTF-8" />
+	<!-- See http://stackoverflow.com/questions/6630770/where-do-i-put-image-files-css-js-etc-in-codeigniter -->
+	<link href="<?php echo asset_url(); ?>css/styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div id="wrapper">
+		<h2><?php echo $title; ?></h2>
+		<div class="form-box">
+			<?php 
+				echo '<table>';
+				echo form_open('login');
+				echo '<tr><td>' . form_label('Username:', 'username') . '</td>';
+				echo '<td>' . form_input('username') . '</td></tr>';
+				echo '<tr><td>' . form_label('Password:', 'password') . '</td>';
+				echo '<td>' . form_password('password') . '</td></tr>';
+				echo '</tr></table>';
+				echo '<div class="form-btn-wrapper">';
+				echo form_submit(array('name' => 'login_submit', 'value' => 'Login',
+					'class' => 'form-btn'));
+				echo '</div>';
+			?>
+		</div>
+	</div>
+</body>
+</html>

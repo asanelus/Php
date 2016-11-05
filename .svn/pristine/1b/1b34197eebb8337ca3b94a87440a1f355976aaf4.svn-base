@@ -1,0 +1,18 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Home extends CI_Controller {
+	public function __construct(){
+		parent::__construct();
+		$this->load->helper('url');
+	}
+	
+	public function index() {
+		$data['title'] = 'Clinic - Main';
+		$data['welcome_message'] = 'Welcome to the Flying Mongoose clinic, ' .
+				'where all your medical needs are met. We hope to see you ' .
+				'again!';
+		$this->load->view('home/index', $data);
+	}
+}
+?>

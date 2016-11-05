@@ -1,0 +1,20 @@
+<?php
+if(!defined('BASEPATH'))
+	exit('No direct script access allowed');
+
+class Web_api extends CI_Contreoller {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->load->model('web_api');
+		$this->load->driver('session');
+		$this->load->database();
+	}
+	
+	public function index() {
+		
+		
+		$data['json'];
+	}
+}
+?>
