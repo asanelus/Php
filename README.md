@@ -1,2 +1,2 @@
 # Php
-My PHP projects
+Some PHP code samples
